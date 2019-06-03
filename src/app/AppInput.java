@@ -14,16 +14,16 @@ public class AppInput extends Input {
 	public static final int BUTTON_ZR = 512;
 	public static final int BUTTON_MINUS = 16;
 	public static final int BUTTON_PLUS = 32;
-	public static final int BUTTON_SL = 16384;
-	public static final int BUTTON_SR = 32768;
+	public static final int BUTTON_SL = 0;
+	public static final int BUTTON_SR = 0;
 	public static final int BUTTON_UP = 1024;
 	public static final int BUTTON_DOWN = 2048;
 	public static final int BUTTON_LEFT = 4096;
 	public static final int BUTTON_RIGHT = 8192;
-	public static final int AXIS_XL = 0;
-	public static final int AXIS_YL = 1;
-	public static final int AXIS_XR = 2;
-	public static final int AXIS_YR = 3;
+	public static final int AXIS_XL = 1;
+	public static final int AXIS_YL = 0;
+	public static final int AXIS_XR = -1;
+	public static final int AXIS_YR = -1;
 
 	private static final int BUTTON_COUNT = 16;
 	private static final int AXIS_COUNT = 4;
@@ -155,7 +155,7 @@ public class AppInput extends Input {
 					case 12:
 					case 13:
 						try {
-							if (super.isControlPressed ((j - 6) % 4, controller)) {
+							if (super.isControlPressed ((j - 8) % 4, controller)) {
 								return true;
 							}
 						} catch (IndexOutOfBoundsException exception) {}
