@@ -104,69 +104,12 @@ public class AppInput extends Input {
 			return false;
 		}
 		for (int i = 0, j = 0, l = AppInput.BUTTON_COUNT; i < l; i++, j++) {
-			if (i == 6) {
+			if ((buttons & 1) != 0) {
 				try {
-					if ((buttons & 1) != 0) {
-						float value = super.getAxisValue(controller, 4);
-						if (((this.controllerMoved[controller] & 16) == 0)) {
-							if (value == -1f) {
-								value = 0f;
-							} else {
-								this.controllerMoved[controller] |= 16;
-							}
-						}
-						if (value > .5f) {
-							return true;
-						}
+					if (super.isButtonPressed(j, controller)) {
+						return true;
 					}
 				} catch (IndexOutOfBoundsException exception) {}
-				j--;
-			} else if (i == 7) {
-				try {
-					if ((buttons & 1) != 0) {
-						float value = super.getAxisValue(controller, 4);
-						if (((this.controllerMoved[controller] & 16) == 0)) {
-							if (value == -1f) {
-								value = 0f;
-							} else {
-								this.controllerMoved[controller] |= 16;
-							}
-						}
-						if (value < -.5f) {
-							return true;
-						}
-					}
-				} catch (IndexOutOfBoundsException exception) {}
-				j--;
-			} else if ((buttons & 1) != 0) {
-				switch(i) {
-					case 12:
-						if (this.isControllerUp(controller)) {
-							return true;
-						}
-						break;
-					case 13:
-						if (this.isControllerDown(controller)) {
-							return true;
-						}
-						break;
-					case 14:
-						if (this.isControllerLeft(controller)) {
-							return true;
-						}
-						break;
-					case 15:
-						if (this.isControllerRight(controller)) {
-							return true;
-						}
-						break;
-					default:
-						try {
-							if (super.isButtonPressed(j, controller)) {
-								return true;
-							}
-						} catch (IndexOutOfBoundsException exception) {}
-				}
 			}
 			buttons >>>= 1;
 		}
@@ -182,31 +125,12 @@ public class AppInput extends Input {
 	@Override
 	public boolean isControlPressed(int buttons, int controller) {
 		for (int i = 0, j = 0, l = AppInput.BUTTON_COUNT; i < l; i++, j++) {
-			if (i == 6 || i == 7) {
-				if ((buttons & 1) != 0 && (controllerPressed[controller] & (1 << (i - 6))) != 0) {
-					controllerPressed[controller] ^= (1 << (i - 6));
-					return true;
-				}
-				j--;
-			} else if ((buttons & 1) != 0) {
-				switch(i) {
-					case 12:
-					case 13:
-					case 14:
-					case 15:
-						try {
-							if (super.isControlPressed((j - 8) % 4, controller)) {
-								return true;
-							}
-						} catch (IndexOutOfBoundsException exception) {}
-						break;
-					default:
-						try {
-							if (super.isControlPressed(j + 4, controller)) {
-								return true;
-							}
-						} catch (IndexOutOfBoundsException exception) {}
-				}
+			if ((buttons & 1) != 0) {
+				try {
+					if (super.isControlPressed(j, controller)) {
+						return true;
+					}
+				} catch (IndexOutOfBoundsException exception) {}
 			}
 			buttons >>>= 1;
 		}

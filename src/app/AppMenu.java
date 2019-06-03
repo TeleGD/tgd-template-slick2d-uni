@@ -30,7 +30,7 @@ public abstract class AppMenu extends AppPage {
 	private boolean upFlag;
 	private boolean downFlag;
 
-	private List <MenuItem> menu;
+	private List<MenuItem> menu;
 
 	private boolean menuVisibility;
 
@@ -79,7 +79,7 @@ public abstract class AppMenu extends AppPage {
 		this.menuBlinkPeriod = 1000;
 		this.menuBlinkCountdown = 0;
 
-		this.setMenu(new ArrayList <MenuItem> ());
+		this.setMenu(new ArrayList<MenuItem>());
 	}
 
 	@Override
@@ -194,8 +194,8 @@ public abstract class AppMenu extends AppPage {
 		}
 	}
 
-	public void setMenu(List <MenuItem> menu) {
-		this.menu = new ArrayList <MenuItem> ();
+	public void setMenu(List<MenuItem>menu) {
+		this.menu = new ArrayList<MenuItem>();
 		this.menu.addAll(menu);
 		this.selectedItem = 0;
 		this.menuScrollY = 0;
@@ -212,8 +212,8 @@ public abstract class AppMenu extends AppPage {
 		this.menuY = this.menuBoxY + (this.menuBoxHeight - this.menuHeight) / 2;
 	}
 
-	public List <MenuItem> getMenu() {
-		List <MenuItem> menu = new ArrayList <MenuItem> ();
+	public List<MenuItem>getMenu() {
+		List<MenuItem> menu = new ArrayList<MenuItem>();
 		menu.addAll(this.menu);
 		return menu;
 	}

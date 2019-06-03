@@ -22,13 +22,13 @@ public abstract class AppGame extends StateBasedGame {
 		"Jeu"
 	};
 
-	public List <AppPlayer> appPlayers;
-	public List <Integer> availableColorIDs;
+	public List<AppPlayer> appPlayers;
+	public List<Integer> availableColorIDs;
 
 	public AppGame(String name, int width, int height, boolean fullscreen) {
 		super(name);
-		this.appPlayers = new ArrayList <AppPlayer> ();
-		this.availableColorIDs = new ArrayList <Integer> ();
+		this.appPlayers = new ArrayList<AppPlayer>();
+		this.availableColorIDs = new ArrayList<Integer>();
 		for (int i = 0, l = AppPlayer.COLOR_NAMES.length; i < l; i++) {
 			this.availableColorIDs.add(i);
 		}

@@ -24,12 +24,12 @@ public class Menu extends AppMenu {
 		this.setTitle("Menu des jeux");
 		this.setSubtitle("Sans sous-titre");
 		this.setMenu(Arrays.asList(new MenuItem[] {
-			new MenuItem(AppGame.TITLES[AppGame.PAGES_MENU]) {
+			new MenuItem(AppGame.TITLES[AppGame.PAGES_GAME]) {
 				public void itemSelected() {
 					Pause pause = (Pause) game.getState(AppGame.PAGES_PAUSE);
 					pause.setPreviousID(AppGame.PAGES_GAME);
 					pause.setNextID(AppGame.PAGES_MENU);
-					game.enterState(AppGame.PAGES_MENU);
+					game.enterState(AppGame.PAGES_GAME);
 				}
 			},
 			new MenuItem("Retour") {
