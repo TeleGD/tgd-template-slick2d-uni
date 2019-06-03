@@ -1,6 +1,6 @@
 build:
 	mkdir -p bin
-	javac -d bin -cp src:res:arcade-lib/* src/Main.java
+	javac -d bin -cp src:res:lib/* src/Main.java
 
 build-arcade:
 	mkdir -p bin
@@ -26,7 +26,7 @@ archive:
 archive-arcade:
 	mkdir -p zip
 	cp res/arcade-natives/* zip
-	cp lib/* zip
+	cp arcade-lib/* zip
 	jar cfm zip/main.jar .mf -C bin . -C res .
 	echo "#/bin/sh\njava -Djava.library.path=. -jar main.jar" > zip/main.sh
 	echo "java -Djava.library.path=. -jar main.jar" > zip/main.bat
