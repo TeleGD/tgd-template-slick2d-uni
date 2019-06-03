@@ -8,18 +8,18 @@ public class AppInput extends Input {
 	public static final int BUTTON_B = 2;
 	public static final int BUTTON_X = 4;
 	public static final int BUTTON_Y = 8;
-	public static final int BUTTON_L = 16;
-	public static final int BUTTON_R = 32;
-	public static final int BUTTON_ZL = 64;
-	public static final int BUTTON_ZR = 128;
-	public static final int BUTTON_MINUS = 256;
-	public static final int BUTTON_PLUS = 512;
-	public static final int BUTTON_SL = 1024;
-	public static final int BUTTON_SR = 2048;
-	public static final int BUTTON_UP = 4096;
-	public static final int BUTTON_DOWN = 80192;
-	public static final int BUTTON_LEFT = 16384;
-	public static final int BUTTON_RIGHT = 32768;
+	public static final int BUTTON_L = 64;
+	public static final int BUTTON_R = 128;
+	public static final int BUTTON_ZL = 256;
+	public static final int BUTTON_ZR = 512;
+	public static final int BUTTON_MINUS = 16;
+	public static final int BUTTON_PLUS = 32;
+	public static final int BUTTON_SL = 16384;
+	public static final int BUTTON_SR = 32768;
+	public static final int BUTTON_UP = 1024;
+	public static final int BUTTON_DOWN = 2048;
+	public static final int BUTTON_LEFT = 4096;
+	public static final int BUTTON_RIGHT = 8192;
 	public static final int AXIS_XL = 0;
 	public static final int AXIS_YL = 1;
 	public static final int AXIS_XR = 2;
@@ -105,11 +105,34 @@ public class AppInput extends Input {
 		}
 		for (int i = 0, j = 0, l = AppInput.BUTTON_COUNT; i < l; i++, j++) {
 			if ((buttons & 1) != 0) {
-				try {
-					if (super.isButtonPressed(j, controller)) {
-						return true;
-					}
-				} catch (IndexOutOfBoundsException exception) {}
+				switch (i) {
+					case 10:
+						if (this.isControllerUp (controller)) {
+							return true;
+						}
+						break;
+					case 11:
+						if (this.isControllerDown (controller)) {
+							return true;
+						}
+						break;
+					case 12:
+						if (this.isControllerLeft (controller)) {
+							return true;
+						}
+						break;
+					case 13:
+						if (this.isControllerRight (controller)) {
+							return true;
+						}
+						break;
+					default:
+						try {
+							if (super.isButtonPressed (j, controller)) {
+								return true;
+							}
+						} catch (IndexOutOfBoundsException exception) {}
+				}
 			}
 			buttons >>>= 1;
 		}
@@ -126,11 +149,24 @@ public class AppInput extends Input {
 	public boolean isControlPressed(int buttons, int controller) {
 		for (int i = 0, j = 0, l = AppInput.BUTTON_COUNT; i < l; i++, j++) {
 			if ((buttons & 1) != 0) {
-				try {
-					if (super.isControlPressed(j + 4, controller)) {
-						return true;
-					}
-				} catch (IndexOutOfBoundsException exception) {}
+				switch (i) {
+					case 10:
+					case 11:
+					case 12:
+					case 13:
+						try {
+							if (super.isControlPressed ((j - 6) % 4, controller)) {
+								return true;
+							}
+						} catch (IndexOutOfBoundsException exception) {}
+						break;
+					default:
+						try {
+							if (super.isControlPressed(j + 4, controller)) {
+								return true;
+							}
+						} catch (IndexOutOfBoundsException exception) {}
+				}
 			}
 			buttons >>>= 1;
 		}
