@@ -127,7 +127,7 @@ public class AppInput extends Input {
 		for (int i = 0, j = 0, l = AppInput.BUTTON_COUNT; i < l; i++, j++) {
 			if ((buttons & 1) != 0) {
 				try {
-					if (super.isControlPressed(j, controller)) {
+					if (super.isControlPressed(j + 4, controller)) {
 						return true;
 					}
 				} catch (IndexOutOfBoundsException exception) {}
