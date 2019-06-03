@@ -76,6 +76,10 @@ public class Welcome extends AppPage {
 		this.forwardFlag = false;
 		this.gameMasterID = AppInput.ANY_CONTROLLER;
 		for (int i = input.getControllerCount() - 1; i >= 0; i--) {
+			if (input.isButtonPressed(AppInput.BUTTON_MINUS, i)) {
+				this.backFlag = true;
+				break;
+			}
 			if (input.isButtonPressed(AppInput.BUTTON_PLUS, i)) {
 				this.forwardFlag = true;
 				this.gameMasterID = i;
