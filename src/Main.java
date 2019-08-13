@@ -1,15 +1,11 @@
-import java.awt.DisplayMode;
-import java.awt.GraphicsEnvironment;
-
 import app.AppGame;
 
 public final class Main {
 
-	public static final void main(String [] arguments) {
-		DisplayMode display = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+	public static final void main(String[] arguments) {
 		String title = "Uni By TGD";
-		int width = display.getWidth();
-		int height = display.getHeight();
+		int width = 1024;
+		int height = 768;
 		boolean fullscreen = true;
 		new AppGame(title, width, height, fullscreen) {
 

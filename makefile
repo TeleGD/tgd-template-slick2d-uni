@@ -41,4 +41,4 @@ clean:
 	rm -r -f bin/*
 	rm -r -f zip/*
 
-.PHONY: build run archive exec clean
+.PHONY: build build-arcade run run-arcade archive archive-arcade exec clean

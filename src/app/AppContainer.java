@@ -1,5 +1,8 @@
 package app;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsEnvironment;
+
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -13,12 +16,86 @@ import org.newdawn.slick.util.Log;
 
 public class AppContainer extends AppGameContainer {
 
+	private static int screenWidth;
+	private static int screenHeight;
+
+	static {
+		DisplayMode display = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+		AppContainer.screenWidth = display.getWidth();
+		AppContainer.screenHeight = display.getHeight();
+	}
+
 	private Graphics graphics;
+	private int windowWidth;
+	private int windowHeight;
+	private int canvasWidth;
+	private int canvasHeight;
+	private float scale;
+	private float offsetX;
+	private float offsetY;
+	private boolean inputToClip;
+	private boolean graphicsToClip;
 
 	public AppContainer(Game game, int width, int height, boolean fullscreen) throws SlickException {
 		super(game, width, height, fullscreen);
 	}
 
+	@Override
+	public void setDisplayMode(int width, int height, boolean fullscreen) throws SlickException {
+		this.windowWidth = width;
+		this.windowHeight = height;
+		if (fullscreen) {
+			int screenWidth = AppContainer.screenWidth;
+			int screenHeight = AppContainer.screenHeight;
+			int a = screenWidth * height;
+			int b = screenHeight * width;
+			int scaledWidth = screenWidth;
+			int scaledHeight = screenHeight;
+			if (a < b) {
+				this.scale = (float) scaledWidth / width;
+				scaledHeight = (int) (height * this.scale);
+			} else if (b < a) {
+				this.scale = (float) scaledHeight / height;
+				scaledWidth = (int) (width * this.scale);
+			} else {
+				this.scale = 1;
+			}
+			this.offsetX = (screenWidth - scaledWidth) / 2;
+			this.offsetY = (screenHeight - scaledHeight) / 2;
+			this.canvasWidth = scaledWidth;
+			this.canvasHeight = scaledHeight;
+			width = screenWidth;
+			height = screenHeight;
+		} else {
+			this.scale = 1;
+			this.offsetX = 0;
+			this.offsetY = 0;
+			this.canvasWidth = width;
+			this.canvasHeight = height;
+		}
+		super.setDisplayMode(width, height, fullscreen);
+		if (super.input != null) {
+			this.clipInput();
+		} else {
+			this.inputToClip = true;
+		}
+		if (this.graphics != null) {
+			this.clipGraphics();
+		} else {
+			this.graphicsToClip = true;
+		}
+	}
+
+	@Override
+	public void setFullscreen(boolean fullscreen) throws SlickException {
+		if (super.isFullscreen() == fullscreen) {
+			return;
+		}
+		this.setDisplayMode(this.windowWidth, this.windowHeight, fullscreen);
+		super.getDelta();
+	}
+
+	@Override
 	protected void updateAndRender(int delta) throws SlickException {
 		if (super.smoothDeltas) {
 			if (super.getFPS() != 0) {
@@ -61,6 +138,8 @@ public class AppContainer extends AppGameContainer {
 				GL.glClear(SGL.GL_COLOR_BUFFER_BIT | SGL.GL_DEPTH_BUFFER_BIT);
 			}
 			GL.glLoadIdentity();
+			GL.glEnable(SGL.GL_SCISSOR_TEST);
+			((AppOutput) this.graphics).restoreCanvasClip();
 			this.graphics.resetTransform();
 			this.graphics.resetFont();
 			this.graphics.resetLineWidth();
@@ -71,6 +150,7 @@ public class AppContainer extends AppGameContainer {
 				Log.error(e);
 				throw new SlickException("Game.render() failure - check the game code.");
 			}
+			((AppOutput) this.graphics).restoreCanvasClip();
 			this.graphics.resetTransform();
 			if (super.isShowingFPS()) {
 				super.getDefaultFont().drawString(10, 10, "FPS: " + recordedFPS);
@@ -82,17 +162,23 @@ public class AppContainer extends AppGameContainer {
 		}
 	}
 
+	@Override
 	protected void initGL() {
 		if (super.input == null) {
 			super.input = new AppInput(super.height);
 		}
-		Graphics graphics = this.graphics;
-		this.graphics = null;
-		super.initGL();
-		if (graphics != null) {
-			((AppOutput) graphics).setDimensions(super.width, super.height);
+		if (this.inputToClip) {
+			this.clipInput();
+			this.inputToClip = false;
 		}
-		this.graphics = graphics;
+		if (this.graphics != null) {
+			((AppOutput) this.graphics).setDimensions(super.width, super.height);
+			if (this.graphicsToClip) {
+				this.clipGraphics();
+				this.graphicsToClip = false;
+			}
+		}
+		super.initGL();
 	}
 
 	protected void initSystem() throws SlickException {
@@ -100,14 +186,38 @@ public class AppContainer extends AppGameContainer {
 		super.setMusicVolume(1f);
 		super.setSoundVolume(1f);
 		this.graphics = new AppOutput(super.width, super.height);
+		if (this.graphicsToClip) {
+			this.clipGraphics();
+			this.graphicsToClip = false;
+		}
 		super.setDefaultFont(this.graphics.getFont());
 	}
 
+	private void clipInput() {
+		((AppInput) super.input).setCanvasClip(this.scale, this.offsetX, this.offsetY);
+	}
+
+	private void clipGraphics() {
+		((AppOutput) this.graphics).setCanvasClip(this.scale, this.offsetX, this.offsetY, this.canvasWidth, this.canvasHeight);
+	}
+
+	@Override
+	public int getWidth() {
+		return this.windowWidth;
+	}
+
+	@Override
+	public int getHeight() {
+		return this.windowHeight;
+	}
+
+	@Override
 	@Deprecated
 	public Input getInput() {
 		return super.input;
 	}
 
+	@Override
 	@Deprecated
 	public Graphics getGraphics() {
 		return this.graphics;
